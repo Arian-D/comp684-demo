@@ -67,6 +67,7 @@ Next suggested improvements
 - Add authentication and authorization
 - Implement proper password hashing
 - Add more validation and error handling
+- 
 - Create a frontend (React)
 - Add order history
 - Deploy to cloud

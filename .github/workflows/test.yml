@@ -1,0 +1,47 @@
+name: 🧠 AI-Assisted Testing & CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    name: Run Tests and Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout your repository code
+      - name: 📦 Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up Python environment
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 3️⃣ Install dependencies
+      - name: 📚 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov hypothesis
+
+      # 4️⃣ Run all tests with coverage
+      - name: 🧪 Run tests with coverage
+        run: |
+          pytest --cov=src --cov-report=term-missing -v
+
+      # 5️⃣ Display coverage summary in workflow logs
+      - name: 📊 Show coverage summary
+        run: |
+          coverage report || true
+
+      # 6️⃣ Upload coverage results as artifact (optional but professional)
+      - name: 📤 Upload coverage report
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: .coverage

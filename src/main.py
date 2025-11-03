@@ -15,6 +15,10 @@ class UserCreate(BaseModel):
     name: str
     email: str
 
+class AddToCart(BaseModel):
+    product_id: int
+    quantity: int
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -71,16 +75,24 @@ def get_cart(user_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/users/{user_id}/cart")
-def add_to_cart(user_id: int, product_id: int, quantity: int, db: Session = Depends(get_db)):
+def add_to_cart(user_id: int, payload: AddToCart, db: Session = Depends(get_db)):
+    # ✅ Extract values from the JSON payload
+    product_id = payload.product_id
+    quantity = payload.quantity
+
     cart = db.query(ShoppingCart).filter(ShoppingCart.user_id == user_id).first()
     if not cart:
         raise HTTPException(status_code=404, detail="Cart not found")
+
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product or product.stock < quantity:
         raise HTTPException(status_code=400, detail="Product not available")
+
+    # ✅ Create the cart item
     item = CartItem(cart_id=cart.id, product_id=product_id, quantity=quantity)
     db.add(item)
     db.commit()
+    db.refresh(item)
     return item
 
 

@@ -15,7 +15,16 @@ def setup_database():
     engine = create_engine("sqlite:///:memory:")
     Base.metadata.create_all(bind=engine)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    app.dependency_overrides[get_db] = lambda: SessionLocal()
+
+    # Correct way to override the dependency
+    def override_get_db():
+        db = SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+
+    app.dependency_overrides[get_db] = override_get_db
 
 def test_create_user():
     response = client.post("/users/", json={"name": "Test User", "email": "test@example.com"})

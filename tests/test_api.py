@@ -78,6 +78,11 @@ def test_add_to_cart():
     response = client.post("/users/", json={"name": "Cart User", "email": "cart@example.com"})
     assert response.status_code == 200
     user_id = response.json()["id"]
-    # Assume product id 1 exists
-    response = client.post(f"/users/{user_id}/cart", json={"product_id": 1, "quantity": 1})
+    # Get an existing product id instead of assuming 1
+    products_resp = client.get("/products/")
+    assert products_resp.status_code == 200
+    products = products_resp.json()
+    assert len(products) > 0
+    product_id = products[0]["id"]
+    response = client.post(f"/users/{user_id}/cart", json={"product_id": product_id, "quantity": 1})
     assert response.status_code == 200

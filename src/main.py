@@ -1,17 +1,26 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from .database import SessionLocal, engine
 from .models import Base, User, Product, ShoppingCart, CartItem
 from contextlib import asynccontextmanager
 import uvicorn
 
+# ✅ Ensure tables exist before app runs (important for tests)
 Base.metadata.create_all(bind=engine)
+
+
+# ✅ Add a schema for JSON user creation (fixes 422 Unprocessable Entity)
+class UserCreate(BaseModel):
+    name: str
+    email: str
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    """App startup and shutdown."""
     db = SessionLocal()
-    # Seed products
+    # Seed products if DB empty
     if not db.query(Product).first():
         products = [
             Product(name="Laptop", price=999.99, stock=10),
@@ -22,9 +31,11 @@ async def lifespan(app: FastAPI):
         db.commit()
     db.close()
     yield
-    # Shutdown (if needed)
+    # Shutdown logic (if needed)
+
 
 app = FastAPI(lifespan=lifespan)
+
 
 def get_db():
     db = SessionLocal()
@@ -33,19 +44,23 @@ def get_db():
     finally:
         db.close()
 
+
+# ✅ Accept JSON body for user creation
 @app.post("/users/")
-def create_user(name: str, email: str, db: Session = Depends(get_db)):
-    user = User(name=name, email=email, password_hash="dummy")  # In real app, hash password
-    cart = ShoppingCart(user=user)
-    db.add(user)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    user_obj = User(name=user.name, email=user.email, password_hash="dummy")  # Hash passwords in real apps
+    cart = ShoppingCart(user=user_obj)
+    db.add(user_obj)
     db.add(cart)
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(user_obj)
+    return user_obj
+
 
 @app.get("/products/")
 def get_products(db: Session = Depends(get_db)):
     return db.query(Product).all()
+
 
 @app.get("/users/{user_id}/cart")
 def get_cart(user_id: int, db: Session = Depends(get_db)):
@@ -53,6 +68,7 @@ def get_cart(user_id: int, db: Session = Depends(get_db)):
     if not cart:
         raise HTTPException(status_code=404, detail="Cart not found")
     return cart.items
+
 
 @app.post("/users/{user_id}/cart")
 def add_to_cart(user_id: int, product_id: int, quantity: int, db: Session = Depends(get_db)):
@@ -67,6 +83,7 @@ def add_to_cart(user_id: int, product_id: int, quantity: int, db: Session = Depe
     db.commit()
     return item
 
+
 @app.delete("/users/{user_id}/cart/{item_id}")
 def remove_from_cart(user_id: int, item_id: int, db: Session = Depends(get_db)):
     cart = db.query(ShoppingCart).filter(ShoppingCart.user_id == user_id).first()
@@ -78,6 +95,7 @@ def remove_from_cart(user_id: int, item_id: int, db: Session = Depends(get_db)):
     db.delete(item)
     db.commit()
     return {"message": "Item removed"}
+
 
 @app.post("/users/{user_id}/checkout")
 def checkout(user_id: int, db: Session = Depends(get_db)):
@@ -93,6 +111,7 @@ def checkout(user_id: int, db: Session = Depends(get_db)):
     db.query(CartItem).filter(CartItem.cart_id == cart.id).delete()
     db.commit()
     return {"message": "Checkout successful", "total": total}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

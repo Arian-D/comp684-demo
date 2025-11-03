@@ -1,15 +1,16 @@
-comp684-demo — Shopping Cart Service (demo)
+comp684-demo — Inventory System MVP (demo)
 
 Overview
 --------
-A small, in-memory Python shopping cart service with unit tests. This repository contains a simple `ShoppingCart` class (in `src/shopping_cart.py`) with methods to add/remove items and compute the cart total. Tests are in `tests/test_shopping_cart.py` and were validated with `pytest`.
+An MVP implementation of an inventory system with users, shopping carts, cart items, and products. Built with FastAPI, SQLAlchemy, and SQLite for simplicity. Includes basic API endpoints for user management, product browsing, cart operations, and checkout.
 
-Notes / Known behaviors
-----------------------
-- Items are stored in-memory as a dict: `item_id -> {"quantity": int, "price": float}`.
-- Adding an existing item increases quantity but does not update the stored price (this is a deliberate current behavior and may be changed later).
-- Removing more quantity than exists deletes the item (no negative quantities are possible).
-- No persistence or concurrency control is implemented.
+Features
+--------
+- User registration
+- Product catalog
+- Shopping cart management (add/remove items)
+- Checkout with stock validation
+- Seeded sample data
 
 Run locally (Windows PowerShell)
 -------------------------------
@@ -17,7 +18,7 @@ Run locally (Windows PowerShell)
 
 ```powershell
 python -m venv venv
-.\venv\Scripts\Activate.ps1
+.\\venv\\Scripts\\Activate.ps1
 ```
 
 2. Install dependencies:
@@ -26,28 +27,48 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-3. Run tests:
+3. Run the API server:
+
+```powershell
+python src/main.py
+```
+
+4. Run tests:
 
 ```powershell
 python -m pytest -v
 ```
 
+API Endpoints
+-------------
+- POST /users/ - Create user
+- GET /products/ - List products
+- GET /users/{user_id}/cart - Get cart
+- POST /users/{user_id}/cart - Add to cart
+- DELETE /users/{user_id}/cart/{item_id} - Remove from cart
+- POST /users/{user_id}/checkout - Checkout
+
 What I pushed
---------------
-- `src/shopping_cart.py` — ShoppingCart implementation
-- `tests/test_shopping_cart.py` — pytest tests (7 passing tests)
-- `requirements.txt` — pytest deps
+-------------
+- `src/models.py` — SQLAlchemy models
+- `src/database.py` — Database setup
+- `src/main.py` — FastAPI app with endpoints
+- `src/shopping_cart.py` — Original in-memory cart (kept for reference)
+- `tests/test_models.py` — Model tests
+- `tests/test_api.py` — API tests
+- `tests/test_shopping_cart.py` — Original cart tests
+- `design.md` — Requirements and implementation guide
+- `AGENTS.md` — Design document
+- `requirements.txt` — Dependencies
 - `README.md` — this file
 
 Next suggested improvements
 -------------------------
-- Decide and document price-update semantics when adding the same item with different prices.
-- Add serialization (to/from dict or JSON) and a `clear()` method.
-- Consider custom exception types for clearer error handling.
-- Add concurrency/locking or move to a per-request cart when used in a web service.
-
-If you'd like, I can:
-- Push a follow-up commit that enforces a price-update rule (e.g., reject price mismatches or update the price using a weighted average) and add tests for it.
-- Create a small web API wrapper (Flask/FastAPI) around this cart for manual testing.
+- Add authentication and authorization
+- Implement proper password hashing
+- Add more validation and error handling
+- Create a frontend (React)
+- Add order history
+- Deploy to cloud
 
 Repository remote: https://github.com/Arian-D/comp684-demo

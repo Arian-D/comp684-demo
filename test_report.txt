@@ -1,0 +1,16 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-7.4.3, pluggy-1.6.0
+rootdir: c:\Users\joeth\Project Demo\comp684-demo
+plugins: anyio-3.7.1
+collected 10 items
+
+tests\test_models.py ...                                                 [ 30%]
+tests\test_shopping_cart.py .......                                      [100%]
+
+============================== warnings summary ===============================
+src\models.py:5
+  c:\Users\joeth\Project Demo\comp684-demo\src\models.py:5: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 10 passed, 1 warning in 0.41s ========================

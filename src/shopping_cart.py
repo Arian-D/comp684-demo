@@ -33,3 +33,7 @@ class ShoppingCart:
             item["quantity"] * item["price"]
             for item in self.items.values()
         )
+
+    def notify(self, message: str):
+        """Log a notification message to the console."""
+        print(message)

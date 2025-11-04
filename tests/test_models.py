@@ -39,3 +39,9 @@ def test_cart_relationship(db):
     db.commit()
     assert user.cart == cart
     assert cart.user == user
+
+def test_shopping_cart_notify(capsys):
+    cart = ShoppingCart()
+    cart.notify("Notification message")
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "Notification message"

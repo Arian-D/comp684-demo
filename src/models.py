@@ -23,6 +23,10 @@ class ShoppingCart(Base):
     user = relationship("User", back_populates="cart")
     items = relationship("CartItem", back_populates="cart")
 
+    def notify(self, message: str):
+        """Log a notification message to the console."""
+        print(message)
+
 class CartItem(Base):
     __tablename__ = 'cart_item'
 

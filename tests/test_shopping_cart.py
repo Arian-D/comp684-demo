@@ -40,3 +40,9 @@ def test_get_total():
     cart.add_item("apple", 2, 1.0)
     cart.add_item("banana", 3, 0.5)
     assert cart.get_total() == 3.5  # (2 * 1.0) + (3 * 0.5)
+
+def test_notify(capsys):
+    cart = ShoppingCart()
+    cart.notify("Test message")
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "Test message"

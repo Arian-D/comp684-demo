@@ -17,6 +17,7 @@
   - Users can add products to their cart with quantities
   - Users can view, update, or remove items from cart
   - Cart persists across sessions
+  - Cart encapsulates a notification mechanism that logs messages to console
 
 - **Checkout and Inventory**:
   - Users can checkout, which creates an order and updates product stock
@@ -56,6 +57,48 @@ Tables:
 - shopping_cart (id, user_id)
 - cart_item (id, cart_id, product_id, quantity)
 - product (id, name, price, stock)
+
+### UML Class Diagram
+
+```mermaid
+classDiagram
+    class BaseModel {
+        +id: int
+    }
+    
+    class User {
+        +name: str
+        +email: str
+        +cart: ShoppingCart
+    }
+    
+    class ShoppingCart {
+        +user_id: int
+        +items: list[CartItem]
+        +notify(message: str): void
+    }
+    
+    class CartItem {
+        +cart_id: int
+        +product_id: int
+        +quantity: int
+    }
+    
+    class Product {
+        +name: str
+        +price: float
+        +stock: int
+    }
+    
+    BaseModel <|-- User
+    BaseModel <|-- ShoppingCart
+    BaseModel <|-- CartItem
+    BaseModel <|-- Product
+    
+    User ||--o{ ShoppingCart : has
+    ShoppingCart ||--o{ CartItem : contains
+    CartItem ||--|| Product : references
+```
 
 ### API Endpoints
 - `/users` - User CRUD

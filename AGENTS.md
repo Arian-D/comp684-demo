@@ -33,6 +33,7 @@ classDiagram
     class ShoppingCart {
         +user_id: int
         +items: list[CartItem]
+        +notify(message: str): void
     }
     
     class CartItem {

@@ -53,3 +53,8 @@ jobs:
       # 7️⃣ (Optional) Announce completion in logs
       - name: 🏁 Workflow complete
         run: echo "🎉 All tests and coverage reports generated successfully!"
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

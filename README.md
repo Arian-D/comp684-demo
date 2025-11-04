@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/Arian-D/comp684-demo/branch/main/graph/badge.svg)](https://app.codecov.io/gh/Arian-D/comp684-demo)
+
 comp684-demo — Inventory System MVP (demo)
 
 Overview

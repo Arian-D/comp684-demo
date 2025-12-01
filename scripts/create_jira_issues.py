@@ -5,7 +5,8 @@ from jira import JIRA
 EMAIL = os.getenv("JIRA_EMAIL")
 TOKEN = os.getenv("JIRA_API_TOKEN")
 JIRA_URL = os.getenv("JIRA_URL")
-PROJECT_KEY = os.getenv("JIRA_PROJECT_KEY", "SCRUM")  # default to SCRUM
+PROJECT_KEY = os.getenv("JIRA_PROJECT_KEY", "SCRUM")
+ # default to SCRUM
 
 def get_jira_client():
     if not (EMAIL and TOKEN and JIRA_URL):

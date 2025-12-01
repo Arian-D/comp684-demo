@@ -1,36 +1,32 @@
 name: Create Jira Issues
 
 on:
-  workflow_dispatch:    # manual trigger from Actions tab
-  # you can add push triggers later if you want:
-  # push:
-  #   branches:
-  #     - main
+  workflow_dispatch:      # lets you run it manually
+  push:
+    branches: [ main ]    # or change to whatever branch you use
 
 jobs:
   create_issues:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-    - name: Install dependencies
-      run: |
-        pip install jira
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jira python-dotenv
+          # or: pip install -r requirements.txt
 
-    - name: Run Jira issue creation script
-      env:
-       env:
-  JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
-  JIRA_API_TOKEN: ${{ secrets.COMP684DEMO }}
-  JIRA_URL: ${{ secrets.JIRA_URL }}
-  JIRA_PROJECT_KEY: "COMP684"
-
-        JIRA_PROJECT_KEY: "SCRUM"
-      run: python scripts/create_jira_issues.py
+      - name: Run Jira script
+        env:
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+          JIRA_API_TOKEN: ${{ secrets.COMP684DEMO }}  # ⬅ map token here
+        run: python scripts/create_jira_issues.py

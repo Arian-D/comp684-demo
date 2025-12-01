@@ -31,6 +31,7 @@ jobs:
           # 🔥 use COMP684DEMO secret as the API token
           JIRA_API_TOKEN: ${{ secrets.COMP684DEMO }}
           JIRA_URL: ${{ secrets.JIRA_URL }}
-          JIRA_PROJECT_KEY: "COMP684"
+          JIRA_PROJECT_KEY: "SCRUM"
+
         run: |
           python scripts/create_jira_issues.py

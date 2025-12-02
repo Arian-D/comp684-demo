@@ -7,6 +7,8 @@ from .models import Base, User, Product, ShoppingCart, CartItem, Order, OrderIte
 from . import schemas
 from contextlib import asynccontextmanager
 import uvicorn
+import time
+import math
 
 # ✅ Ensure tables exist before app runs (important for tests)
 Base.metadata.create_all(bind=engine)
@@ -131,8 +133,19 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return user_obj
 
 
+# BOTTLENECK: Heavy computation in backend
+def expensive_backend_computation():
+    """Simulate expensive backend processing (e.g., data transformation)"""
+    result = 0
+    for i in range(50000000):
+        result += math.sqrt(i) * math.sin(i)
+    return result
+
 @app.get("/products/", response_model=list[schemas.ProductBase])
 def get_products(db: Session = Depends(get_db)):
+    # BOTTLENECK: Force expensive computation on every product request
+    expensive_backend_computation()
+    time.sleep(2)  # Additional artificial delay
     return db.query(Product).all()
 
 

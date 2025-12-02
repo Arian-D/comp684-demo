@@ -6,9 +6,24 @@ const API_BASE_URL = window.location.hostname === 'localhost'
 let currentUser = null;
 let currentCart = [];
 
+// Heavy computation bottleneck for LCP
+function heavyComputation() {
+    let result = 0;
+    // CPU-intensive operation that runs before content is interactive
+    for (let i = 0; i < 100000000; i++) {
+        result += Math.sqrt(i) * Math.sin(i) * Math.cos(i);
+    }
+    return result;
+}
+
 // Initialize app
 async function init() {
     try {
+        // BOTTLENECK: Run blocking computation on main thread during init
+        console.log('Starting heavy computation...');
+        heavyComputation(); // This blocks rendering and increases LCP
+        console.log('Heavy computation complete');
+        
         // Login as demo user
         const loginResponse = await fetch(`${API_BASE_URL}/demo/login`, {
             method: 'POST',

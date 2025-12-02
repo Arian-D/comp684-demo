@@ -1,5 +1,0 @@
-{
-    "docs_path": "docs",
-    "include": ["src/"],
-    "exclude": ["tests/"]
-}

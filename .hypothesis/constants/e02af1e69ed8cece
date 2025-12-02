@@ -1,0 +1,4 @@
+# file: /workspaces/comp684-demo/src/shopping_cart.py
+# hypothesis_version: 6.148.5
+
+['Item not in cart', 'price', 'quantity']

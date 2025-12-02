@@ -1,0 +1,4 @@
+# file: /workspaces/comp684-demo/src/models.py
+# hypothesis_version: 6.148.5
+
+['CartItem', 'Order', 'OrderItem', 'Product', 'ShoppingCart', 'User', 'cart', 'cart_item', 'completed', 'items', 'order', 'order.id', 'order_item', 'orders', 'product', 'product.id', 'shopping_cart', 'shopping_cart.id', 'user', 'user.id']
